@@ -18,8 +18,8 @@ export class AIService {
     }
   }
 
-  async generateCommitMessage(diff, fileList) {
-    const prompt = this._buildPrompt(diff, fileList);
+  async generateCommitMessage(diff, fileList, externalContext) {
+    const prompt = this._buildPrompt(diff, fileList, externalContext);
 
     try {
       return await this.provider.generate(diff, prompt);
@@ -30,17 +30,18 @@ export class AIService {
     }
   }
 
-  _buildPrompt(diff, fileList) {
+  _buildPrompt(diff, fileList, externalContext) {
     const lang = this.config.language || 'en';
     const files = fileList.join('\n');
+    const archContext = externalContext ? `\nArchitectural Context:\n${externalContext}\n` : '';
 
     return `
       You are an expert developer and technical writer.
-      Generate a concise, meaningful, and professional git commit message based on the following diff and file list.
+      Generate a concise, meaningful, and professional git commit message based on the following diff, file list, and architectural context.
       Follow the Conventional Commits specification.
       Focus on the "why" (intent) and "what" (impact).
       Write the message in ${lang}.
-
+      ${archContext}
       Context - Changed Files:
       ${files}
 

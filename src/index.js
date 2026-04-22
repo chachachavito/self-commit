@@ -4,6 +4,7 @@ import ora from 'ora';
 import { getStagedData, commit } from './git.js';
 import { AIService } from './ai.js';
 import { getConfig } from './config.js';
+import { getExternalContext } from './analyzer.js';
 
 export async function main(options) {
   const config = await getConfig();
@@ -14,10 +15,17 @@ export async function main(options) {
 
   try {
     const { diff, fileList } = await getStagedData();
+
+    let externalContext = null;
+    if (config.contextCommand) {
+      spinner.text = 'Running external architectural analysis...';
+      externalContext = await getExternalContext(config.contextCommand);
+    }
+
     spinner.text = 'Generating commit message...';
 
     const ai = new AIService(config);
-    const suggestedMessage = await ai.generateCommitMessage(diff, fileList);
+    const suggestedMessage = await ai.generateCommitMessage(diff, fileList, externalContext);
 
     spinner.stop();
 

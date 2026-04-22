@@ -7,6 +7,7 @@ export const DEFAULT_CONFIG = {
   model: 'gpt-4o-mini',
   language: 'en',
   verbosity: 'normal',
+  contextCommand: null,
 };
 
 export async function getConfig() {
