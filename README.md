@@ -20,13 +20,13 @@ Git commit messages are often:
 
 ---
 
-## 🚀 Features
-
 - **AI-Assisted Copywriting:** Drafts meaningful messages focused on intent (`why`) rather than just changes (`what`).
-- **Fully Agnostic:** Language-independent and designed to support multiple AI providers.
+- **Fully Agnostic:** Language-independent and supports multiple AI providers (**OpenAI** & **Google Gemini**).
+- **File-Aware Intelligence:** Automatically detects scopes based on changed file paths and structural context.
 - **Interactive Flow:** Refine, edit, or regenerate suggestions before committing.
-- **Standardized:** Strictly follows **Conventional Commits**.
-- **Fast and Lightweight:** Zero config required for the MVP.
+- **Configurable:** Customize provider, model, language, and verbosity via `self-commit.config.json`.
+- **Standardized:** Strictly follows **Conventional Commits** and integrates with **Commitlint**.
+- **Governance Ready:** Includes built-in support for **Husky** and **Lint-staged**.
 
 ---
 
@@ -83,39 +83,39 @@ Sensitive files like `.env` should be ignored or filtered before sending data to
 
 ## Roadmap
 
-### v0.1 — Core
+### v0.1 — Core [DONE]
 
 - Generate commit messages from staged changes (`git diff --cached`)
 - Follow Conventional Commits format
 - Interactive confirmation prompt
 - Minimal CLI: `npx self-commit`
 
-### v0.2 — Control
+### v0.2 — Control [DONE]
 
-- `--dry` mode (preview without committing)
-- basic error handling and fallbacks
-- improve prompt engineering
+- `--dry-run` mode
+- Basic error handling and fallbacks
+- Improved prompt engineering
 
-### v0.3 — Configuration
+### v0.3 — Configuration [DONE]
 
-- config file support (`self-commit.config.json`)
-- custom model selection (Provider Agnostic)
-- language and verbosity options
+- Config file support (`self-commit.config.json`) via `cosmiconfig`
+- Multi-provider support (OpenAI & Gemini)
+- Language and verbosity options
 
-### v0.4 — Intelligence
+### v0.4 — Intelligence [DONE]
 
-- file-aware analysis (grouping changes by context)
-- better scope detection
+- File-aware analysis (grouping changes by context)
+- Automatic scope detection based on file paths
 
 ### v0.5 — Integration
 
-- integration with architecture analysis tools
-- enriched commit messages with structural context
+- Integration with architecture analysis tools
+- Enriched commit messages with structural context
 
 ### v1.0 — Platform
 
-- foundation for integration with **self-graph**
-- historical analysis of developer intent
+- Foundation for integration with **self-graph**
+- Historical analysis of developer intent
 
 ---
 
