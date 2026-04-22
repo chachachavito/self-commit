@@ -151,4 +151,4 @@ self-commit is a step toward turning commits into **structured data about develo
 
 ## 📄 License
 
-MIT
+MIT_

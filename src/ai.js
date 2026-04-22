@@ -34,7 +34,7 @@ export class AIService {
 
     try {
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview', // High quality for intent analysis
+        model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.2,
         max_tokens: 200
