@@ -1,8 +1,13 @@
 # self-commit
 
-The agnostic copywriting assistant for structured git commits.
+[![NPM Version](https://img.shields.io/npm/v/self-commit.svg)](https://www.npmjs.com/package/self-commit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://github.com/bruchave/self-commit)
+
+> The agnostic copywriting assistant for structured git commits.
 
 ```bash
+# Get started immediately
 npx self-commit
 ```
 
@@ -10,23 +15,34 @@ npx self-commit
 
 ## ✨ Why?
 
-Git commit messages are often:
-
-- inconsistent
-- vague
-- forgotten
-
-**self-commit** fixes that by analyzing your actual code changes and generating structured, useful commit messages automatically.
+Git commit messages are often inconsistent, vague, or forgotten. **self-commit** fixes that by analyzing your code changes and generating structured, meaningful commit messages that explain **why** a change exists, not just **what** changed.
 
 ---
 
-- **AI-Assisted Copywriting:** Drafts meaningful messages focused on intent (`why`) rather than just changes (`what`).
-- **Fully Agnostic:** Language-independent and supports multiple AI providers (**OpenAI** & **Google Gemini**).
-- **File-Aware Intelligence:** Automatically detects scopes based on changed file paths and structural context.
-- **Interactive Flow:** Refine, edit, or regenerate suggestions before committing.
-- **Configurable:** Customize provider, model, language, and verbosity via `self-commit.config.json`.
-- **Standardized:** Strictly follows **Conventional Commits** and integrates with **Commitlint**.
-- **Governance Ready:** Includes built-in support for **Husky** and **Lint-staged**.
+## 🚀 Features
+
+- **🧠 AI-Assisted Copywriting:** Drafts intent-focused messages using GPT-4o-mini or Gemini 1.5.
+- **🌍 Fully Agnostic:** Language-independent and supports multiple AI providers.
+- **🛡️ Security First:** Built-in secret scanning (DLP) and sensitive file filtering.
+- **🔑 Global Credential Store:** Securely save your API keys once; use them across all projects.
+- **📋 Conventional Commits:** Strictly follows the standard and integrates with `commitlint`.
+- **🛠️ Extensible Context:** Run architectural analysis commands to enrich the AI's understanding.
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    A[Staged Changes] -->|git diff| B(Security Filter)
+    B -->|DLP Scan| C{Safe?}
+    C -->|Yes| D[AI Service]
+    C -->|No| E[Abort & Alert]
+    F[Context Hook] -.->|External Data| D
+    D -->|Prompt| G[AI Provider]
+    G -->|Suggestion| H[Interactive CLI]
+    H -->|Confirm| I[Git Commit]
+```
 
 ---
 
@@ -48,32 +64,14 @@ npx self-commit set-key openai sk-...
 npx self-commit set-key gemini AIza...
 ```
 
-The key is stored securely on your machine and will be used for all your projects.
-
 ### Management
 
 ```bash
-# Check which providers are configured
+# Check configuration status
 npx self-commit status
 
 # Remove a global key
 npx self-commit delete-key openai
-```
-
-### Local Override (Optional)
-
-If you still prefer per-project keys, you can use a `.env` file (ensure it is in your `.gitignore`):
-
-```bash
-OPENAI_API_KEY=your_key_here
-```
-
-```json
-{
-  "provider": "openai",
-  "model": "gpt-4o-mini",
-  "language": "en"
-}
 ```
 
 ---
@@ -85,110 +83,42 @@ git add .
 npx self-commit
 ```
 
----
+### Configuration (`self-commit.config.json`)
 
-## 🧠 Example
-
-```bash
-feat(api): add caching layer
-
-- reduce response time
-- improve scalability
+```json
+{
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "language": "en",
+  "verbosity": "normal",
+  "contextCommand": "npm run architecture-context"
+}
 ```
 
 ---
 
 ## 🔒 Security
 
-**self-commit** is designed with security in mind:
+**self-commit** is built for professional environments:
 
-- **Sensitive File Filtering:** Automatically detects and excludes sensitive files from the AI diff analysis (e.g., `.env`, `*.pem`, `*.key`, `package-lock.json`).
-- **Secret Scanning (DLP):** Scans the _content_ of the diff for potential secrets (API keys, AWS tokens, GitHub tokens) and aborts the analysis if detected.
-- **Injection Protection:** Blocks external context commands containing dangerous shell characters to prevent command injection.
-- **Environment Variables:** API keys are never hardcoded and are read from your local environment.
-- **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata is shared.
+- **Sensitive File Filtering:** Automatically excludes `.env`, `*.pem`, `*.key`, `package-lock.json`, etc.
+- **Content-Based Scanning:** Aborts analysis if API keys or tokens are detected in the diff.
+- **Injection Protection:** Strict validation of external context commands.
+- **Data Privacy:** Only the diff of allowed files is sent to your selected provider.
 
 > [!IMPORTANT]
-> Although we filter common sensitive files, always audit your code for hardcoded secrets before staging changes.
+> Always audit your changes for hardcoded secrets before staging.
 
 ---
 
-## Roadmap
+## 🧠 Manifesto
 
-### v0.1 — Core [DONE]
+Writing commit messages is part of thinking. Most commits today are rushed, inconsistent, and disconnected from real intent.
 
-- Generate commit messages from staged changes (`git diff --cached`)
-- Follow Conventional Commits format
-- Interactive confirmation prompt
-- Minimal CLI: `npx self-commit`
-
-### v0.2 — Control [DONE]
-
-- `--dry-run` mode
-- Basic error handling and fallbacks
-- Improved prompt engineering
-
-### v0.3 — Configuration [DONE]
-
-- Config file support (`self-commit.config.json`) via `cosmiconfig`
-- Multi-provider support (OpenAI & Gemini)
-- Language and verbosity options
-
-### v0.4 — Intelligence [DONE]
-
-- File-aware analysis (grouping changes by context)
-- Automatic scope detection based on file paths
-
-### v0.5 — Integration
-
-- Integration with architecture analysis tools
-- Enriched commit messages with structural context
-
-### v1.0 — Platform
-
-- Foundation for integration with **self-graph**
-- Historical analysis of developer intent
-
----
-
-## Manifesto
-
-Writing commit messages is part of thinking.
-
-Most commits today are:
-
-- rushed
-- inconsistent
-- disconnected from real intent
-
-A commit should explain why a change exists, not just what changed.
-
-self-commit treats commits as structured expressions of intent.
-
-Instead of writing messages manually, the system reads the code, understands the change, and generates a message that reflects:
-
-- purpose
-- impact
-- context
-
-Commits become:
-
-- consistent
-- meaningful
-- comparable over time
-
-This is not just about automation.
-
-It is about turning code changes into data that can be:
-
-- analyzed
-- understood
-- evolved
-
-self-commit is a step toward turning commits into **structured data about developer intent**, powering the foundation for **self-graph**.
+**self-commit** treats commits as structured expressions of intent. By turning code changes into structured data, we power the foundation for **self-graph**—enabling historical analysis and a deeper understanding of developer evolution.
 
 ---
 
 ## 📄 License
 
-MIT\_
+MIT
