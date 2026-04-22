@@ -20,7 +20,7 @@ const SECRET_DETECTION_RULES = [
   { name: 'Private Key', regex: /-----BEGIN [A-Z ]+ PRIVATE KEY-----/ },
 ];
 
-function scanForSecrets(content) {
+export function scanForSecrets(content) {
   for (const rule of SECRET_DETECTION_RULES) {
     if (rule.regex.test(content)) {
       return rule.name;
