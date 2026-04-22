@@ -45,7 +45,8 @@ export class AIService {
   }
 
   _buildPrompt(diff, fileList, externalContext) {
-    const lang = this.config.language || 'en';
+    // Strict sanitization of config fields to prevent prompt injection
+    const lang = (this.config.language || 'en').replace(/[^a-z-]/gi, '').substring(0, 10);
     const files = fileList.join('\n');
     const archContext = externalContext ? `\nArchitectural Context:\n${externalContext}\n` : '';
 

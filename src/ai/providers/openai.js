@@ -4,7 +4,7 @@ export class OpenAIProvider {
   constructor(config) {
     if (!config.apiKey) {
       throw new Error(
-        'No OpenAI API key found. Use "self-commit --set-key openai <KEY>" or set OPENAI_API_KEY env var.'
+        'No OpenAI API key found. Use "self-commit set-key openai" to set it securely or use the OPENAI_API_KEY env var.'
       );
     }
     this.openai = new OpenAI({ apiKey: config.apiKey });

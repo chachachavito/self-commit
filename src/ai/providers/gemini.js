@@ -4,7 +4,7 @@ export class GeminiProvider {
   constructor(config) {
     if (!config.apiKey) {
       throw new Error(
-        'No Gemini API key found. Use "self-commit --set-key gemini <KEY>" or set GEMINI_API_KEY env var.'
+        'No Gemini API key found. Use "self-commit set-key gemini" to set it securely or use the GEMINI_API_KEY env var.'
       );
     }
     this.genAI = new GoogleGenerativeAI(config.apiKey);
