@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
-import { getStagedDiff, commit } from './git.js';
+import { getStagedData, commit } from './git.js';
 import { AIService } from './ai.js';
 import { getConfig } from './config.js';
 
@@ -13,11 +13,11 @@ export async function main(options) {
   const spinner = ora(`Analyzing staged changes (${config.provider})...`).start();
 
   try {
-    const diff = await getStagedDiff();
+    const { diff, fileList } = await getStagedData();
     spinner.text = 'Generating commit message...';
 
     const ai = new AIService(config);
-    const suggestedMessage = await ai.generateCommitMessage(diff);
+    const suggestedMessage = await ai.generateCommitMessage(diff, fileList);
 
     spinner.stop();
 

@@ -18,8 +18,8 @@ export class AIService {
     }
   }
 
-  async generateCommitMessage(diff) {
-    const prompt = this._buildPrompt(diff);
+  async generateCommitMessage(diff, fileList) {
+    const prompt = this._buildPrompt(diff, fileList);
 
     try {
       return await this.provider.generate(diff, prompt);
@@ -30,21 +30,26 @@ export class AIService {
     }
   }
 
-  _buildPrompt(diff) {
+  _buildPrompt(diff, fileList) {
     const lang = this.config.language || 'en';
+    const files = fileList.join('\n');
+
     return `
       You are an expert developer and technical writer.
-      Generate a concise, meaningful, and professional git commit message based on the following diff.
+      Generate a concise, meaningful, and professional git commit message based on the following diff and file list.
       Follow the Conventional Commits specification.
       Focus on the "why" (intent) and "what" (impact).
       Write the message in ${lang}.
 
+      Context - Changed Files:
+      ${files}
+
       Rules:
       1. Format: <type>(<scope>): <description>
       2. Types: feat, fix, chore, docs, style, refactor, perf, test.
-      3. Description should be in present tense, lowercase, and without a period at the end.
-      4. If there are multiple changes, add a body with bullet points.
-      5. Keep it professional and technical.
+      3. Scope: Detect the most relevant scope based on the file paths (e.g., 'api', 'core', 'ui', 'config').
+      4. Description: Present tense, lowercase, no period.
+      5. Body: Use bullet points for multiple changes.
       6. Return ONLY the commit message text.
 
       Diff:
