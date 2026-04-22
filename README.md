@@ -1,5 +1,3 @@
-
-
 # self-commit
 
 The agnostic copywriting assistant for structured git commits.
@@ -14,9 +12,9 @@ npx self-commit
 
 Git commit messages are often:
 
-- inconsistent  
-- vague  
-- forgotten  
+- inconsistent
+- vague
+- forgotten
 
 **self-commit** fixes that by analyzing your actual code changes and generating structured, useful commit messages automatically.
 
@@ -86,30 +84,36 @@ Sensitive files like `.env` should be ignored or filtered before sending data to
 ## Roadmap
 
 ### v0.1 — Core
+
 - Generate commit messages from staged changes (`git diff --cached`)
 - Follow Conventional Commits format
 - Interactive confirmation prompt
 - Minimal CLI: `npx self-commit`
 
 ### v0.2 — Control
+
 - `--dry` mode (preview without committing)
 - basic error handling and fallbacks
 - improve prompt engineering
 
 ### v0.3 — Configuration
+
 - config file support (`self-commit.config.json`)
 - custom model selection (Provider Agnostic)
 - language and verbosity options
 
 ### v0.4 — Intelligence
+
 - file-aware analysis (grouping changes by context)
 - better scope detection
 
 ### v0.5 — Integration
+
 - integration with architecture analysis tools
 - enriched commit messages with structural context
 
 ### v1.0 — Platform
+
 - foundation for integration with **self-graph**
 - historical analysis of developer intent
 
@@ -120,6 +124,7 @@ Sensitive files like `.env` should be ignored or filtered before sending data to
 Writing commit messages is part of thinking.
 
 Most commits today are:
+
 - rushed
 - inconsistent
 - disconnected from real intent
@@ -129,11 +134,13 @@ A commit should explain why a change exists, not just what changed.
 self-commit treats commits as structured expressions of intent.
 
 Instead of writing messages manually, the system reads the code, understands the change, and generates a message that reflects:
+
 - purpose
 - impact
 - context
 
 Commits become:
+
 - consistent
 - meaningful
 - comparable over time
@@ -141,6 +148,7 @@ Commits become:
 This is not just about automation.
 
 It is about turning code changes into data that can be:
+
 - analyzed
 - understood
 - evolved
@@ -151,4 +159,4 @@ self-commit is a step toward turning commits into **structured data about develo
 
 ## 📄 License
 
-MIT_
+MIT\_

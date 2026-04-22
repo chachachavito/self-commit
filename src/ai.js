@@ -3,13 +3,13 @@ import OpenAI from 'openai';
 export class AIService {
   constructor() {
     const apiKey = process.env['OPENAI-API-KEY'] || process.env.OPENAI_API_KEY;
-    
+
     if (!apiKey) {
       throw new Error('No OpenAI API key found. Please set OPENAI-API-KEY in your .env file.');
     }
 
     this.openai = new OpenAI({
-      apiKey: apiKey
+      apiKey: apiKey,
     });
   }
 
@@ -37,12 +37,12 @@ export class AIService {
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.2,
-        max_tokens: 200
+        max_tokens: 200,
       });
 
       return response.choices[0].message.content.trim();
     } catch (error) {
-      throw new Error(`AI Generation failed: ${error.message}`);
+      throw new Error(`AI Generation failed: ${error.message}`, { cause: error });
     }
   }
 }

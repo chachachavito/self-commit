@@ -8,14 +8,14 @@ export async function main(options) {
   console.log(chalk.bold.cyan('\n🚀 self-commit: Copywriting Assistant\n'));
 
   const spinner = ora('Analyzing staged changes...').start();
-  
+
   try {
     const diff = await getStagedDiff();
     spinner.text = 'Generating commit message...';
-    
+
     const ai = new AIService();
     const suggestedMessage = await ai.generateCommitMessage(diff);
-    
+
     spinner.stop();
 
     console.log(chalk.green('Suggested message:'));
@@ -37,9 +37,9 @@ export async function main(options) {
           { name: 'Commit with this message', value: 'commit' },
           { name: 'Edit message', value: 'edit' },
           { name: 'Regenerate', value: 'regenerate' },
-          { name: 'Cancel', value: 'cancel' }
-        ]
-      }
+          { name: 'Cancel', value: 'cancel' },
+        ],
+      },
     ]);
 
     if (action === 'cancel') {
@@ -59,8 +59,8 @@ export async function main(options) {
           type: 'editor',
           name: 'editedMessage',
           message: 'Edit the message:',
-          default: suggestedMessage
-        }
+          default: suggestedMessage,
+        },
       ]);
       messageToUse = editedMessage;
     }
@@ -69,7 +69,6 @@ export async function main(options) {
       await commit(messageToUse);
       console.log(chalk.bold.green('\n✅ Commit successful!'));
     }
-
   } catch (error) {
     spinner.fail(error.message);
     throw error;
