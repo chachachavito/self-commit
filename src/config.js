@@ -20,6 +20,15 @@ export function getGlobalKey(provider) {
   return configStore.get(`keys.${provider}`);
 }
 
+export function deleteGlobalKey(provider) {
+  configStore.delete(`keys.${provider}`);
+}
+
+export function listGlobalKeys() {
+  const keys = configStore.get('keys') || {};
+  return Object.keys(keys);
+}
+
 export async function getConfig() {
   try {
     const result = await explorer.search();
