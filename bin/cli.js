@@ -3,6 +3,7 @@
 import 'dotenv/config';
 import { Command } from 'commander';
 import chalk from 'chalk';
+import inquirer from 'inquirer';
 import { main } from '../src/index.js';
 import { setGlobalKey, listGlobalKeys, deleteGlobalKey } from '../src/config.js';
 
@@ -26,9 +27,28 @@ program
   .command('set-key')
   .description('Set a global API key for a provider')
   .argument('<provider>', 'AI provider (openai, gemini)')
-  .argument('<key>', 'API key value')
-  .action((provider, key) => {
-    setGlobalKey(provider, key);
+  .argument('[key]', 'API key value (optional, will prompt if omitted)')
+  .action(async (provider, key) => {
+    let apiKey = key;
+
+    if (!apiKey) {
+      const response = await inquirer.prompt([
+        {
+          type: 'password',
+          name: 'apiKey',
+          message: `Enter API key for ${provider}:`,
+          mask: '*',
+        },
+      ]);
+      apiKey = response.apiKey;
+    }
+
+    if (!apiKey) {
+      console.error(chalk.red('\nError: API key is required.\n'));
+      process.exit(1);
+    }
+
+    setGlobalKey(provider, apiKey);
     console.log(chalk.green(`\n✅ Global API key for ${provider} saved successfully!\n`));
   });
 

@@ -33,6 +33,15 @@ export async function main(options) {
 
     let externalContext = null;
     if (config.contextCommand) {
+      if (configPath) {
+        console.log(
+          chalk.yellow(
+            `\n⚠️  SECURITY WARNING: Executing external command from local config: ${chalk.bold(
+              config.contextCommand
+            )}`
+          )
+        );
+      }
       spinner.text = chalk.dim('Running architectural analysis...');
       externalContext = await getExternalContext(config.contextCommand);
     }

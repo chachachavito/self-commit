@@ -24,7 +24,7 @@ Git commit messages are often inconsistent, vague, or forgotten. **self-commit**
 - **AI-Assisted Copywriting:** Drafts intent-focused messages using GPT-4o-mini or Gemini 1.5.
 - **Fully Agnostic:** Language-independent and supports multiple AI providers.
 - **Security First:** Built-in secret scanning (DLP) and sensitive file filtering.
-- **Global Credential Store:** Securely save your API keys once; use them across all projects.
+- **Global Credential Store:** Securely save your API keys; use them across all projects.
 - **Conventional Commits:** Strictly follows the standard and integrates with `commitlint`.
 - **Extensible Context:** Run architectural analysis commands to enrich the AI's understanding.
 
@@ -36,11 +36,13 @@ Git commit messages are often inconsistent, vague, or forgotten. **self-commit**
 graph TD
     A[Staged Changes] -->|git diff| B(Security Filter)
     B -->|DLP Scan| C{Safe?}
-    C -->|Yes| D[AI Service]
     C -->|No| E[Abort & Alert]
-    F[Context Hook] -.->|External Data| D
+    C -->|Yes| J(Size Filter)
+    J -->|Truncate if >20KB| D[AI Service]
+    K[Strict Config Search] -->|Git Root Only| D
+    F[Context Hook] -.->|Warning if Local| D
     D -->|Prompt| G[AI Provider]
-    G -->|Suggestion| H[Interactive CLI]
+    G -->|Sanitized Result| H[Interactive CLI]
     H -->|Confirm| I[Git Commit]
 ```
 
@@ -54,14 +56,14 @@ npm install -D self-commit
 
 ## Setup
 
-Set your API key once globally:
+Set your API key once globally (using a secure prompt to protect your shell history):
 
 ```bash
 # For OpenAI
-npx self-commit set-key openai sk-...
+npx self-commit set-key openai
 
 # For Gemini
-npx self-commit set-key gemini AIza...
+npx self-commit set-key gemini
 ```
 
 ### Management
@@ -99,16 +101,18 @@ npx self-commit
 
 ## Security
 
-**self-commit** is built for professional environments:
+**self-commit** is built with professional-grade security to protect your code and credentials:
 
-- **Sensitive File Filtering:** Automatically excludes `.env`, `*.pem`, `*.key`, `package-lock.json`, etc.
-- **Secret Scanning (DLP):** Scans the content of the diff for potential secrets (API keys, AWS tokens, GitHub tokens) and aborts the analysis if detected.
-- **Injection Immunity:** Uses `spawn` (with `shell: false`) to execute external commands. This design neutrally handles arguments, making command injection impossible by bypassing the shell interpreter.
-- **Local Credential Storage:** Your API keys are stored **locally and only on your machine** using the standard system data directory.
-- **Config Transparency:** Automatically warns you if a local configuration file (from the current project) is being used, preventing "config poisoning" attacks.
-- **AI Output Hardening:** Enforces strict response size limits (max tokens) on all AI providers to prevent Denial of Service (DoS) from malicious or hallucinated responses.
-- **Direct Communication:** self-commit has no middleman servers. It communicates directly from your machine to the AI provider (OpenAI/Google).
-- **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata or personal data is shared.
+- **Secret Masking**: The `set-key` command uses secure interactive prompts to prevent API keys from being stored in your shell history.
+- **DLP (Data Loss Prevention)**: Automatically scans staged diffs for secrets (API keys, PEM files, etc.) and filters sensitive files like `.env`.
+- **Execution Safety**:
+  - **Context Warning**: Triggers a warning when executing `contextCommand` from project-level configurations.
+  - **Injection Immunity**: Uses `spawn` with `shell: false` and argument separators (`--`) to prevent shell injection via malicious filenames.
+- **Resilience**:
+  - **DoS Protection**: Truncates diffs larger than 20KB to prevent API cost exhaustion and token overflows.
+  - **Config Hijacking Protection**: Restricts configuration search to the current Git repository root.
+  - **Output Sanitization**: Strips control characters and markdown artifacts from AI responses.
+- **Data Privacy**: No middleman servers. Communication happens directly between your machine and the AI provider.
 
 > [!IMPORTANT]
 > Always audit your changes for hardcoded secrets before staging.

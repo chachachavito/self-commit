@@ -53,7 +53,14 @@ export async function getStagedData() {
     );
   }
 
-  const diff = await git.diff(['--cached', '--', ...filteredFiles]);
+  let diff = await git.diff(['--cached', '--', ...filteredFiles]);
+
+  const MAX_DIFF_SIZE = 20000; // ~20KB limit
+  if (diff.length > MAX_DIFF_SIZE) {
+    diff =
+      diff.substring(0, MAX_DIFF_SIZE) +
+      '\n\n[... Diff truncated for performance and security reasons ...]';
+  }
 
   // Content-based secret scanning
   const detectedSecret = scanForSecrets(diff);

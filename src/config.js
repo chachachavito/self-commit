@@ -1,8 +1,10 @@
 import { cosmiconfig } from 'cosmiconfig';
 import Conf from 'conf';
+import { simpleGit } from 'simple-git';
 
 const configStore = new Conf({ projectName: 'self-commit' });
 const explorer = cosmiconfig('self-commit');
+const git = simpleGit();
 
 export const DEFAULT_CONFIG = {
   provider: 'openai',
@@ -31,7 +33,20 @@ export function listGlobalKeys() {
 
 export async function getConfig() {
   try {
-    const result = await explorer.search();
+    let gitRoot;
+    try {
+      gitRoot = await git.revparse(['--show-toplevel']);
+    } catch {
+      gitRoot = process.cwd();
+    }
+
+    const result = await explorer.search(gitRoot);
+
+    // Ensure the config found is actually within the git root
+    if (result && !result.filepath.startsWith(gitRoot)) {
+      return { config: DEFAULT_CONFIG, configPath: null };
+    }
+
     const projectConfig = result ? result.config : {};
     const provider = projectConfig.provider || DEFAULT_CONFIG.provider;
 
@@ -48,7 +63,7 @@ export async function getConfig() {
       },
       configPath: result ? result.filepath : null,
     };
-  } catch (error) {
+  } catch {
     console.warn('Failed to load config, using defaults.');
     return { config: DEFAULT_CONFIG, configPath: null };
   }

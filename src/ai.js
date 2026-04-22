@@ -23,11 +23,20 @@ export class AIService {
 
     try {
       const result = await this.provider.generate(diff, prompt);
-      // Robustness: Remove markdown code blocks and backticks
-      return result
-        .replace(/```[a-z]*\n/g, '')
-        .replace(/```/g, '')
-        .trim();
+
+      // Robustness: Remove markdown blocks, backticks, and potential control characters
+      return (
+        result
+          .replace(/```[a-z]*\n/g, '')
+          .replace(/```/g, '')
+          // eslint-disable-next-line no-control-regex
+          .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '') // Remove control characters
+          .split('\n')
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0)
+          .join('\n')
+          .trim()
+      );
     } catch (error) {
       throw new Error(`AI Generation failed (${this.config.provider}): ${error.message}`, {
         cause: error,
