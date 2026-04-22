@@ -13,10 +13,11 @@ export async function main(options) {
 
   const banner = figlet.textSync('self-commit', { font: 'Small' });
   const keyArt = chalk.magenta(`
-     ooo.
-    o88888o
-    8888888  o0o  o0o
-     "88888P" "8P" "8P"
+      .---.
+     /   o \\_______________________
+    |       ______________________/
+     \\     /        |  |  |
+      '---'
   `);
 
   console.log(keyArt);

@@ -32,16 +32,30 @@ Git commit messages are often:
 
 ## 📦 Installation
 
-You can use it without installing:
-
-```bash
-npx self-commit
-```
-
-Or install locally:
-
 ```bash
 npm install -D self-commit
+```
+
+## 🔑 Setup
+
+1. Create a `.env` file in your root:
+
+```bash
+# If using OpenAI
+OPENAI_API_KEY=your_key_here
+
+# If using Gemini
+GEMINI_API_KEY=your_key_here
+```
+
+2. (Optional) Configure your preferred provider in `self-commit.config.json`:
+
+```json
+{
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "language": "en"
+}
 ```
 
 ---
@@ -52,13 +66,6 @@ npm install -D self-commit
 git add .
 npx self-commit
 ```
-
-What happens:
-
-1. Reads your staged changes (`git diff --cached`)
-2. Sends context to AI
-3. Proposes a message (**Interactive Mode**)
-4. You review, edit, and confirm the commit
 
 ---
 
