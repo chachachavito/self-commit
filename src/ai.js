@@ -22,7 +22,12 @@ export class AIService {
     const prompt = this._buildPrompt(diff, fileList, externalContext);
 
     try {
-      return await this.provider.generate(diff, prompt);
+      const result = await this.provider.generate(diff, prompt);
+      // Robustness: Remove markdown code blocks and backticks
+      return result
+        .replace(/```[a-z]*\n/g, '')
+        .replace(/```/g, '')
+        .trim();
     } catch (error) {
       throw new Error(`AI Generation failed (${this.config.provider}): ${error.message}`, {
         cause: error,
@@ -51,7 +56,8 @@ export class AIService {
       3. Scope: Detect the most relevant scope based on the file paths (e.g., 'api', 'core', 'ui', 'config').
       4. Description: Present tense, lowercase, no period.
       5. Body: Use bullet points for multiple changes.
-      6. Return ONLY the commit message text.
+      6. Return ONLY the raw commit message text.
+      7. NEVER include markdown code blocks or backticks (\`\`\`).
 
       Diff:
       ${diff}

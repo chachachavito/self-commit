@@ -12,15 +12,7 @@ export async function main(options) {
   const config = await getConfig();
 
   const banner = figlet.textSync('self-commit', { font: 'Small' });
-  const keyArt = chalk.magenta(`
-      .---.
-     /   o \\_______________________
-    |       ______________________/
-     \\     /        |  |  |
-      '---'
-  `);
 
-  console.log(keyArt);
   console.log(chalk.bold.magenta(banner));
   console.log(chalk.dim(` version 0.5 | agnostic copywriting assistant\n`));
 
