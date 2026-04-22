@@ -2,5 +2,6 @@
   "provider": "openai",
   "model": "gpt-4o-mini",
   "language": "pt",
-  "verbosity": "detailed"
+  "verbosity": "detailed",
+  "contextCommand": "architecture-generate ."
 }

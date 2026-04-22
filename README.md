@@ -91,7 +91,7 @@ npx self-commit
   "model": "gpt-4o-mini",
   "language": "en",
   "verbosity": "normal",
-  "contextCommand": "npm run architecture-context"
+  "contextCommand": "architecture-generate ."
 }
 ```
 
