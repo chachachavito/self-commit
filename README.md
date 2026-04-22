@@ -85,6 +85,8 @@ feat(api): add caching layer
 **self-commit** is designed with security in mind:
 
 - **Sensitive File Filtering:** Automatically detects and excludes sensitive files from the AI diff analysis (e.g., `.env`, `*.pem`, `*.key`, `package-lock.json`).
+- **Secret Scanning (DLP):** Scans the _content_ of the diff for potential secrets (API keys, AWS tokens, GitHub tokens) and aborts the analysis if detected.
+- **Injection Protection:** Blocks external context commands containing dangerous shell characters to prevent command injection.
 - **Environment Variables:** API keys are never hardcoded and are read from your local environment.
 - **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata is shared.
 
