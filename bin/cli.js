@@ -11,7 +11,7 @@ const program = new Command();
 program
   .name('self-commit')
   .description('The agnostic copywriting assistant for structured git commits')
-  .version('0.5.0')
+  .version('0.6.0')
   .option('-d, --dry-run', 'preview the commit message without applying it')
   .action(async (options) => {
     try {

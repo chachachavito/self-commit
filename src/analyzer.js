@@ -1,24 +1,40 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { spawn } from 'child_process';
 
-const execAsync = promisify(exec);
+/**
+ * Executes an external command safely using spawn to avoid command injection.
+ * @param {string} commandStr The full command string from config
+ * @returns {Promise<string|null>}
+ */
+export async function getExternalContext(commandStr) {
+  if (!commandStr) return null;
 
-export async function getExternalContext(command) {
-  if (!command) return null;
+  const [cmd, ...args] = commandStr.split(' ');
 
-  // Basic command injection protection
-  const dangerousChars = /[;&|`$<>]/;
-  if (dangerousChars.test(command)) {
-    throw new Error(
-      `Security violation: External command contains dangerous characters and was blocked: ${command}`
-    );
-  }
+  return new Promise((resolve) => {
+    const process = spawn(cmd, args, { shell: false });
+    let stdout = '';
+    let stderr = '';
 
-  try {
-    const { stdout } = await execAsync(command);
-    return stdout.trim();
-  } catch (error) {
-    console.warn(`\n⚠️  External context command failed: ${error.message}`);
-    return null;
-  }
+    process.stdout.on('data', (data) => {
+      stdout += data;
+    });
+
+    process.stderr.on('data', (data) => {
+      stderr += data;
+    });
+
+    process.on('close', (code) => {
+      if (code !== 0) {
+        console.warn(`\n⚠️  External context command failed (exit code ${code}): ${stderr}`);
+        resolve(null);
+      } else {
+        resolve(stdout.trim());
+      }
+    });
+
+    process.on('error', (err) => {
+      console.warn(`\n⚠️  Failed to start external context command: ${err.message}`);
+      resolve(null);
+    });
+  });
 }

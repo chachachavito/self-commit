@@ -30,29 +30,21 @@ describe('Security Features', () => {
     });
   });
 
-  describe('Command Injection Protection', () => {
-    it('should block commands with semicolons', async () => {
-      await expect(getExternalContext('ls; rm -rf /')).rejects.toThrow('Security violation');
-    });
-
-    it('should block commands with pipes', async () => {
-      await expect(getExternalContext('ls | grep test')).rejects.toThrow('Security violation');
-    });
-
-    it('should block commands with backticks', async () => {
-      await expect(getExternalContext('echo `whoami`')).rejects.toThrow('Security violation');
-    });
-
-    it('should block commands with subshells', async () => {
-      await expect(getExternalContext('echo $(whoami)')).rejects.toThrow('Security violation');
+  describe('Command Injection Immunity', () => {
+    it('should treat semicolons as literal arguments (no injection)', async () => {
+      // With spawn (shell: false), 'ls; rm' tries to find an executable named 'ls; rm' or fails
+      // It will NOT execute 'rm'.
+      const result = await getExternalContext('ls ; rm -rf /');
+      expect(result).toBeNull(); // Should fail because 'ls ;' is not a valid command structure here
     });
 
     it('should allow safe commands', async () => {
-      // Note: This will try to run 'ls' in the test environment
-      // We wrap it to avoid actual execution failure if 'ls' isn't there,
-      // but the security check should pass.
       try {
-        await getExternalContext('ls');
+        const result = await getExternalContext('ls');
+        // On success it should return text, on failure (like in CI) it returns null but NOT a security throw
+        if (result !== null) {
+          expect(typeof result).toBe('string');
+        }
       } catch (e) {
         expect(e.message).not.toContain('Security violation');
       }

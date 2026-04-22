@@ -1,6 +1,6 @@
 {
   "name": "self-commit",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "The agnostic copywriting assistant for structured git commits.",
   "main": "index.js",
   "type": "module",
