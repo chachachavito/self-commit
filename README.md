@@ -104,8 +104,9 @@ npx self-commit
 - **Sensitive File Filtering:** Automatically excludes `.env`, `*.pem`, `*.key`, `package-lock.json`, etc.
 - **Secret Scanning (DLP):** Scans the content of the diff for potential secrets (API keys, AWS tokens, GitHub tokens) and aborts the analysis if detected.
 - **Injection Protection:** Blocks external context commands containing dangerous shell characters to prevent command injection.
-- **Environment Variables:** API keys are never hardcoded and are read from your local environment.
-- **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata is shared.
+- **Local Credential Storage:** Your API keys are stored **locally and only on your machine** using the standard system data directory.
+- **Direct Communication:** self-commit has no middleman servers. It communicates directly from your machine to the AI provider (OpenAI/Google).
+- **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata or personal data is shared.
 
 > [!IMPORTANT]
 > Always audit your changes for hardcoded secrets before staging.
@@ -116,7 +117,7 @@ npx self-commit
 
 Writing commit messages is part of thinking. Most commits today are rushed, inconsistent, and disconnected from real intent.
 
-**self-commit** treats commits as structured expressions of intent. By turning code changes into structured data, we power the foundation for **self-graph**—enabling historical analysis and a deeper understanding of developer evolution.
+**self-commit** treats commits as structured expressions of intent. By transforming code changes into organized data, we ensure a readable and professional project history. This serves as the essential foundation for future project intelligence and evolutionary analysis (the **self-graph** ecosystem).
 
 ---
 
