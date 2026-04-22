@@ -13,24 +13,24 @@ npx self-commit
 
 ---
 
-## ✨ Why?
+## Why?
 
 Git commit messages are often inconsistent, vague, or forgotten. **self-commit** fixes that by analyzing your code changes and generating structured, meaningful commit messages that explain **why** a change exists, not just **what** changed.
 
 ---
 
-## 🚀 Features
+## Features
 
-- **🧠 AI-Assisted Copywriting:** Drafts intent-focused messages using GPT-4o-mini or Gemini 1.5.
-- **🌍 Fully Agnostic:** Language-independent and supports multiple AI providers.
-- **🛡️ Security First:** Built-in secret scanning (DLP) and sensitive file filtering.
-- **🔑 Global Credential Store:** Securely save your API keys once; use them across all projects.
-- **📋 Conventional Commits:** Strictly follows the standard and integrates with `commitlint`.
-- **🛠️ Extensible Context:** Run architectural analysis commands to enrich the AI's understanding.
+- **AI-Assisted Copywriting:** Drafts intent-focused messages using GPT-4o-mini or Gemini 1.5.
+- **Fully Agnostic:** Language-independent and supports multiple AI providers.
+- **Security First:** Built-in secret scanning (DLP) and sensitive file filtering.
+- **Global Credential Store:** Securely save your API keys once; use them across all projects.
+- **Conventional Commits:** Strictly follows the standard and integrates with `commitlint`.
+- **Extensible Context:** Run architectural analysis commands to enrich the AI's understanding.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 graph TD
@@ -46,13 +46,13 @@ graph TD
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install -D self-commit
 ```
 
-## 🔑 Setup
+## Setup
 
 Set your API key once globally:
 
@@ -76,7 +76,7 @@ npx self-commit delete-key openai
 
 ---
 
-## ⚙️ Usage
+## Usage
 
 ```bash
 git add .
@@ -97,21 +97,22 @@ npx self-commit
 
 ---
 
-## 🔒 Security
+## Security
 
 **self-commit** is built for professional environments:
 
 - **Sensitive File Filtering:** Automatically excludes `.env`, `*.pem`, `*.key`, `package-lock.json`, etc.
-- **Content-Based Scanning:** Aborts analysis if API keys or tokens are detected in the diff.
-- **Injection Protection:** Strict validation of external context commands.
-- **Data Privacy:** Only the diff of allowed files is sent to your selected provider.
+- **Secret Scanning (DLP):** Scans the content of the diff for potential secrets (API keys, AWS tokens, GitHub tokens) and aborts the analysis if detected.
+- **Injection Protection:** Blocks external context commands containing dangerous shell characters to prevent command injection.
+- **Environment Variables:** API keys are never hardcoded and are read from your local environment.
+- **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata is shared.
 
 > [!IMPORTANT]
 > Always audit your changes for hardcoded secrets before staging.
 
 ---
 
-## 🧠 Manifesto
+## Manifesto
 
 Writing commit messages is part of thinking. Most commits today are rushed, inconsistent, and disconnected from real intent.
 
@@ -119,6 +120,6 @@ Writing commit messages is part of thinking. Most commits today are rushed, inco
 
 ---
 
-## 📄 License
+## License
 
 MIT
