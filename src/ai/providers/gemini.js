@@ -12,7 +12,10 @@ export class GeminiProvider {
   }
 
   async generate(diff, prompt) {
-    const model = this.genAI.getGenerativeModel({ model: this.modelName });
+    const model = this.genAI.getGenerativeModel({
+      model: this.modelName,
+      generationConfig: { maxOutputTokens: 256 },
+    });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text().trim();

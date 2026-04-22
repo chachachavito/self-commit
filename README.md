@@ -105,6 +105,8 @@ npx self-commit
 - **Secret Scanning (DLP):** Scans the content of the diff for potential secrets (API keys, AWS tokens, GitHub tokens) and aborts the analysis if detected.
 - **Injection Immunity:** Uses `spawn` (with `shell: false`) to execute external commands. This design neutrally handles arguments, making command injection impossible by bypassing the shell interpreter.
 - **Local Credential Storage:** Your API keys are stored **locally and only on your machine** using the standard system data directory.
+- **Config Transparency:** Automatically warns you if a local configuration file (from the current project) is being used, preventing "config poisoning" attacks.
+- **AI Output Hardening:** Enforces strict response size limits (max tokens) on all AI providers to prevent Denial of Service (DoS) from malicious or hallucinated responses.
 - **Direct Communication:** self-commit has no middleman servers. It communicates directly from your machine to the AI provider (OpenAI/Google).
 - **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata or personal data is shared.
 

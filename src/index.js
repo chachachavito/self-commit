@@ -9,17 +9,24 @@ import { getConfig } from './config.js';
 import { getExternalContext } from './analyzer.js';
 
 export async function main(options) {
-  const config = await getConfig();
+  const { config, configPath } = await getConfig();
 
-  const banner = figlet.textSync('self-commit', { font: 'Small' });
+  // Show banner
+  console.log(
+    chalk.cyan(
+      figlet.textSync('self-commit', {
+        font: 'Slant',
+        horizontalLayout: 'default',
+        verticalLayout: 'default',
+      })
+    )
+  );
 
-  console.log(chalk.bold.magenta(banner));
-  console.log(chalk.dim(` version 0.5 | agnostic copywriting assistant\n`));
+  if (configPath) {
+    console.log(chalk.yellow(`\n⚠️  Using local configuration: ${configPath}`));
+  }
 
-  const spinner = ora({
-    text: chalk.dim(`Analyzing staged changes (${config.provider})...`),
-    color: 'magenta',
-  }).start();
+  const spinner = ora('Analyzing changes...').start();
 
   try {
     const { diff, fileList } = await getStagedData();

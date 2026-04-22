@@ -41,12 +41,15 @@ export async function getConfig() {
     const apiKey = globalKey || process.env[envVar] || process.env[`${envVar.replace('_', '-')}`];
 
     return {
-      ...DEFAULT_CONFIG,
-      ...projectConfig,
-      apiKey,
+      config: {
+        ...DEFAULT_CONFIG,
+        ...projectConfig,
+        apiKey,
+      },
+      configPath: result ? result.filepath : null,
     };
   } catch (error) {
     console.warn('Failed to load config, using defaults.');
-    return DEFAULT_CONFIG;
+    return { config: DEFAULT_CONFIG, configPath: null };
   }
 }
