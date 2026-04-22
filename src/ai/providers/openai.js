@@ -2,11 +2,12 @@ import OpenAI from 'openai';
 
 export class OpenAIProvider {
   constructor(config) {
-    const apiKey = process.env['OPENAI-API-KEY'] || process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('No OpenAI API key found. Please set OPENAI-API-KEY in your .env file.');
+    if (!config.apiKey) {
+      throw new Error(
+        'No OpenAI API key found. Use "self-commit --set-key openai <KEY>" or set OPENAI_API_KEY env var.'
+      );
     }
-    this.openai = new OpenAI({ apiKey });
+    this.openai = new OpenAI({ apiKey: config.apiKey });
     this.model = config.model || 'gpt-4o-mini';
   }
 

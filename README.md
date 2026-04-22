@@ -38,17 +38,25 @@ npm install -D self-commit
 
 ## 🔑 Setup
 
-1. Create a `.env` file in your root:
+Set your API key once globally:
 
 ```bash
-# If using OpenAI
-OPENAI_API_KEY=your_key_here
+# For OpenAI
+npx self-commit set-key openai sk-...
 
-# If using Gemini
-GEMINI_API_KEY=your_key_here
+# For Gemini
+npx self-commit set-key gemini AIza...
 ```
 
-2. (Optional) Configure your preferred provider in `self-commit.config.json`:
+The key is stored securely on your machine and will be used for all your projects.
+
+### Local Override (Optional)
+
+If you still prefer per-project keys, you can use a `.env` file (ensure it is in your `.gitignore`):
+
+```bash
+OPENAI_API_KEY=your_key_here
+```
 
 ```json
 {

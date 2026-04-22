@@ -2,11 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { AIService } from '../src/ai.js';
 
 describe('AIService', () => {
-  const mockConfig = { provider: 'openai', language: 'en' };
-
-  // Set dummy keys for tests
-  process.env['OPENAI_API_KEY'] = 'test-key';
-  process.env['GEMINI_API_KEY'] = 'test-key';
+  const mockConfig = { provider: 'openai', language: 'en', apiKey: 'test-key' };
 
   it('should sanitize markdown backticks from AI response', async () => {
     const ai = new AIService(mockConfig);

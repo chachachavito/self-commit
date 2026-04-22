@@ -2,11 +2,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export class GeminiProvider {
   constructor(config) {
-    const apiKey = process.env['GEMINI_API_KEY'] || process.env.GOOGLE_API_KEY;
-    if (!apiKey) {
-      throw new Error('No Gemini API key found. Please set GEMINI_API_KEY in your .env file.');
+    if (!config.apiKey) {
+      throw new Error(
+        'No Gemini API key found. Use "self-commit --set-key gemini <KEY>" or set GEMINI_API_KEY env var.'
+      );
     }
-    this.genAI = new GoogleGenerativeAI(apiKey);
+    this.genAI = new GoogleGenerativeAI(config.apiKey);
     this.modelName = config.model || 'gemini-1.5-flash';
   }
 
