@@ -82,9 +82,14 @@ feat(api): add caching layer
 
 ## 🔒 Security
 
-Sensitive files like `.env` should be ignored or filtered before sending data to AI.
+**self-commit** is designed with security in mind:
 
-> Never expose secrets in your commits or diffs.
+- **Sensitive File Filtering:** Automatically detects and excludes sensitive files from the AI diff analysis (e.g., `.env`, `*.pem`, `*.key`, `package-lock.json`).
+- **Environment Variables:** API keys are never hardcoded and are read from your local environment.
+- **Data Privacy:** Only the source code diff and file names are sent to the AI provider. No other metadata is shared.
+
+> [!IMPORTANT]
+> Although we filter common sensitive files, always audit your code for hardcoded secrets before staging changes.
 
 ---
 
