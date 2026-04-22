@@ -3,17 +3,20 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { getStagedDiff, commit } from './git.js';
 import { AIService } from './ai.js';
+import { getConfig } from './config.js';
 
 export async function main(options) {
+  const config = await getConfig();
+
   console.log(chalk.bold.cyan('\n🚀 self-commit: Copywriting Assistant\n'));
 
-  const spinner = ora('Analyzing staged changes...').start();
+  const spinner = ora(`Analyzing staged changes (${config.provider})...`).start();
 
   try {
     const diff = await getStagedDiff();
     spinner.text = 'Generating commit message...';
 
-    const ai = new AIService();
+    const ai = new AIService(config);
     const suggestedMessage = await ai.generateCommitMessage(diff);
 
     spinner.stop();

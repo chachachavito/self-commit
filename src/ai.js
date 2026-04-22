@@ -1,24 +1,43 @@
-import OpenAI from 'openai';
+import { OpenAIProvider } from './ai/providers/openai.js';
+import { GeminiProvider } from './ai/providers/gemini.js';
 
 export class AIService {
-  constructor() {
-    const apiKey = process.env['OPENAI-API-KEY'] || process.env.OPENAI_API_KEY;
+  constructor(config) {
+    this.config = config;
+    this.provider = this._createProvider(config);
+  }
 
-    if (!apiKey) {
-      throw new Error('No OpenAI API key found. Please set OPENAI-API-KEY in your .env file.');
+  _createProvider(config) {
+    switch (config.provider) {
+      case 'openai':
+        return new OpenAIProvider(config);
+      case 'gemini':
+        return new GeminiProvider(config);
+      default:
+        throw new Error(`Unsupported provider: ${config.provider}`);
     }
-
-    this.openai = new OpenAI({
-      apiKey: apiKey,
-    });
   }
 
   async generateCommitMessage(diff) {
-    const prompt = `
+    const prompt = this._buildPrompt(diff);
+
+    try {
+      return await this.provider.generate(diff, prompt);
+    } catch (error) {
+      throw new Error(`AI Generation failed (${this.config.provider}): ${error.message}`, {
+        cause: error,
+      });
+    }
+  }
+
+  _buildPrompt(diff) {
+    const lang = this.config.language || 'en';
+    return `
       You are an expert developer and technical writer.
       Generate a concise, meaningful, and professional git commit message based on the following diff.
       Follow the Conventional Commits specification.
       Focus on the "why" (intent) and "what" (impact).
+      Write the message in ${lang}.
 
       Rules:
       1. Format: <type>(<scope>): <description>
@@ -31,18 +50,5 @@ export class AIService {
       Diff:
       ${diff}
     `;
-
-    try {
-      const response = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.2,
-        max_tokens: 200,
-      });
-
-      return response.choices[0].message.content.trim();
-    } catch (error) {
-      throw new Error(`AI Generation failed: ${error.message}`, { cause: error });
-    }
   }
 }
