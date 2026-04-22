@@ -1,6 +1,7 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
+import figlet from 'figlet';
 import boxen from 'boxen';
 import { getStagedData, commit } from './git.js';
 import { AIService } from './ai.js';
@@ -10,14 +11,17 @@ import { getExternalContext } from './analyzer.js';
 export async function main(options) {
   const config = await getConfig();
 
-  console.log(
-    boxen(chalk.bold.magenta('self-commit') + chalk.dim(' v0.5'), {
-      padding: 0,
-      margin: { top: 1, bottom: 1 },
-      borderStyle: 'double',
-      borderColor: 'magenta',
-    })
-  );
+  const banner = figlet.textSync('self-commit', { font: 'Small' });
+  const keyArt = chalk.magenta(`
+     ooo.
+    o88888o
+    8888888  o0o  o0o
+     "88888P" "8P" "8P"
+  `);
+
+  console.log(keyArt);
+  console.log(chalk.bold.magenta(banner));
+  console.log(chalk.dim(` version 0.5 | agnostic copywriting assistant\n`));
 
   const spinner = ora({
     text: chalk.dim(`Analyzing staged changes (${config.provider})...`),
