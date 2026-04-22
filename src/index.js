@@ -28,29 +28,46 @@ export async function main(options) {
       return;
     }
 
-    const { confirmed, finalMessage } = await inquirer.prompt([
+    const { action } = await inquirer.prompt([
       {
-        type: 'confirm',
-        name: 'confirmed',
-        message: 'Do you want to use this message?',
-        default: true
-      },
-      {
-        type: 'editor',
-        name: 'finalMessage',
-        message: 'Edit the message:',
-        default: suggestedMessage,
-        when: (answers) => !answers.confirmed
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: [
+          { name: 'Commit with this message', value: 'commit' },
+          { name: 'Edit message', value: 'edit' },
+          { name: 'Regenerate', value: 'regenerate' },
+          { name: 'Cancel', value: 'cancel' }
+        ]
       }
     ]);
 
-    const messageToUse = confirmed ? suggestedMessage : finalMessage;
+    if (action === 'cancel') {
+      console.log(chalk.red('\n✖ Commit cancelled.'));
+      return;
+    }
+
+    if (action === 'regenerate') {
+      return main(options); // Recursive call for now
+    }
+
+    let messageToUse = suggestedMessage;
+
+    if (action === 'edit') {
+      const { editedMessage } = await inquirer.prompt([
+        {
+          type: 'editor',
+          name: 'editedMessage',
+          message: 'Edit the message:',
+          default: suggestedMessage
+        }
+      ]);
+      messageToUse = editedMessage;
+    }
 
     if (messageToUse) {
       await commit(messageToUse);
       console.log(chalk.bold.green('\n✅ Commit successful!'));
-    } else {
-      console.log(chalk.red('\n✖ Commit cancelled.'));
     }
 
   } catch (error) {
