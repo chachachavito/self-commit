@@ -50,6 +50,16 @@ npx self-commit set-key gemini AIza...
 
 The key is stored securely on your machine and will be used for all your projects.
 
+### Management
+
+```bash
+# Check which providers are configured
+npx self-commit status
+
+# Remove a global key
+npx self-commit delete-key openai
+```
+
 ### Local Override (Optional)
 
 If you still prefer per-project keys, you can use a `.env` file (ensure it is in your `.gitignore`):
