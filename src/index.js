@@ -1,6 +1,7 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
+import boxen from 'boxen';
 import { getStagedData, commit } from './git.js';
 import { AIService } from './ai.js';
 import { getConfig } from './config.js';
@@ -9,33 +10,48 @@ import { getExternalContext } from './analyzer.js';
 export async function main(options) {
   const config = await getConfig();
 
-  console.log(chalk.bold.cyan('\n🚀 self-commit: Copywriting Assistant\n'));
+  console.log(
+    boxen(chalk.bold.magenta('self-commit') + chalk.dim(' v0.5'), {
+      padding: 0,
+      margin: { top: 1, bottom: 1 },
+      borderStyle: 'double',
+      borderColor: 'magenta',
+    })
+  );
 
-  const spinner = ora(`Analyzing staged changes (${config.provider})...`).start();
+  const spinner = ora({
+    text: chalk.dim(`Analyzing staged changes (${config.provider})...`),
+    color: 'magenta',
+  }).start();
 
   try {
     const { diff, fileList } = await getStagedData();
 
     let externalContext = null;
     if (config.contextCommand) {
-      spinner.text = 'Running external architectural analysis...';
+      spinner.text = chalk.dim('Running architectural analysis...');
       externalContext = await getExternalContext(config.contextCommand);
     }
 
-    spinner.text = 'Generating commit message...';
+    spinner.text = chalk.dim('Generating commit message...');
 
     const ai = new AIService(config);
     const suggestedMessage = await ai.generateCommitMessage(diff, fileList, externalContext);
 
     spinner.stop();
 
-    console.log(chalk.green('Suggested message:'));
-    console.log(chalk.gray('---'));
-    console.log(suggestedMessage);
-    console.log(chalk.gray('---\n'));
+    console.log(chalk.bold.magenta('PROPOSED MESSAGE:'));
+    console.log(
+      boxen(chalk.green(suggestedMessage), {
+        padding: 1,
+        borderStyle: 'round',
+        borderColor: 'green',
+        dimBorder: true,
+      })
+    );
 
     if (options.dryRun) {
-      console.log(chalk.yellow('Dry run: skipping commit.'));
+      console.log(chalk.yellow('\nℹ Dry run: skipping commit.\n'));
       return;
     }
 
