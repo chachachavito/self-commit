@@ -14,6 +14,7 @@ program
   .description('The agnostic copywriting assistant for structured git commits')
   .version('0.6.0')
   .option('-d, --dry-run', 'preview the commit message without applying it')
+  .option('-c, --context', 'enable architectural context analysis (token expensive)', false)
   .action(async (options) => {
     try {
       await main(options);

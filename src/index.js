@@ -32,7 +32,7 @@ export async function main(options) {
     const { diff, fileList } = await getStagedData();
 
     let externalContext = null;
-    if (config.contextCommand) {
+    if (options.context && config.contextCommand) {
       if (configPath) {
         console.log(
           chalk.yellow(
