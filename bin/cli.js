@@ -15,6 +15,8 @@ program
   .version('0.6.0')
   .option('-d, --dry-run', 'preview the commit message without applying it')
   .option('-c, --context', 'enable architectural context analysis (token expensive)', false)
+  .option('-y, --yes', 'skip confirmation and commit automatically', false)
+  .option('--no-commit', 'generate message but do not commit (engine mode)', false)
   .action(async (options) => {
     try {
       await main(options);

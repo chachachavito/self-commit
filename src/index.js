@@ -12,28 +12,33 @@ export async function main(options) {
   const { config, configPath } = await getConfig();
 
   // Show banner
-  console.log(
-    chalk.cyan(
-      figlet.textSync('self-commit', {
-        font: 'Slant',
-        horizontalLayout: 'default',
-        verticalLayout: 'default',
-      })
-    )
-  );
+  if (!options.noCommit) {
+    console.log(
+      chalk.cyan(
+        figlet.textSync('self-commit', {
+          font: 'Slant',
+          horizontalLayout: 'default',
+          verticalLayout: 'default',
+        })
+      )
+    );
+  }
 
-  if (configPath) {
+  if (configPath && !options.noCommit) {
     console.log(chalk.yellow(`\n⚠️  Using local configuration: ${configPath}`));
   }
 
-  const spinner = ora('Analyzing changes...').start();
+  const spinner = ora({
+    text: 'Analyzing changes...',
+    isSilent: options.noCommit,
+  }).start();
 
   try {
     const { diff, fileList } = await getStagedData();
 
     let externalContext = null;
     if (options.context && config.contextCommand) {
-      if (configPath) {
+      if (configPath && !options.noCommit) {
         console.log(
           chalk.yellow(
             `\n⚠️  SECURITY WARNING: Executing external command from local config: ${chalk.bold(
@@ -53,6 +58,11 @@ export async function main(options) {
 
     spinner.stop();
 
+    if (options.noCommit) {
+      process.stdout.write(suggestedMessage);
+      return;
+    }
+
     console.log(chalk.bold.magenta('PROPOSED MESSAGE:'));
     console.log(
       boxen(chalk.green(suggestedMessage), {
@@ -65,6 +75,13 @@ export async function main(options) {
 
     if (options.dryRun) {
       console.log(chalk.yellow('\nℹ Dry run: skipping commit.\n'));
+      return;
+    }
+
+    if (options.yes) {
+      console.log(chalk.yellow('\n⏩ Auto-committing (--yes)'));
+      await commit(suggestedMessage);
+      console.log(chalk.bold.green('✅ Commit successful!'));
       return;
     }
 
