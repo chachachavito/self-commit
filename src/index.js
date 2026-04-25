@@ -30,7 +30,7 @@ export async function main(options) {
 
   const spinner = ora({
     text: 'Analyzing changes...',
-    isSilent: options.noCommit,
+    isEnabled: !options.noCommit,
   }).start();
 
   try {

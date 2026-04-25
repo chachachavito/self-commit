@@ -27,6 +27,7 @@ Git commit messages are often inconsistent, vague, or forgotten. **self-commit**
 - **Global Credential Store:** Securely save your API keys; use them across all projects.
 - **Conventional Commits:** Strictly follows the standard and integrates with `commitlint`.
 - **Extensible Context:** Opt-in architectural analysis to enrich the AI's understanding (via `--context`).
+- **Headless Mode:** Automation-ready with flags for auto-committing or message generation only.
 
 ---
 
@@ -86,16 +87,24 @@ npx self-commit
 
 # To include architectural context (expensive in tokens)
 npx self-commit --context
+
+# Auto-commit without confirmation
+npx self-commit --yes
+
+# Generate message only (useful for pipes or integration)
+npx self-commit --no-commit
 ```
 
 ### Options
 
-| Flag            | Description                            | Default |
-| --------------- | -------------------------------------- | ------- |
-| `-d, --dry-run` | Preview the message without committing | `false` |
-| `-c, --context` | Enable architectural context analysis  | `false` |
-| `-v, --version` | Show current version                   | -       |
-| `-h, --help`    | Show help                              | -       |
+| Flag            | Description                                | Default |
+| --------------- | ------------------------------------------ | ------- |
+| `-d, --dry-run` | Preview the message without committing     | `false` |
+| `-c, --context` | Enable architectural context analysis      | `false` |
+| `-y, --yes`     | Skip confirmation and commit automatically | `false` |
+| `--no-commit`   | Generate message but do not commit         | `false` |
+| `-v, --version` | Show current version                       | -       |
+| `-h, --help`    | Show help                                  | -       |
 
 ### Configuration (`self-commit.config.json`)
 

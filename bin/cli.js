@@ -16,10 +16,14 @@ program
   .option('-d, --dry-run', 'preview the commit message without applying it')
   .option('-c, --context', 'enable architectural context analysis (token expensive)', false)
   .option('-y, --yes', 'skip confirmation and commit automatically', false)
-  .option('--no-commit', 'generate message but do not commit (engine mode)', false)
+  .option('--no-commit', 'generate message but do not commit (engine mode)')
   .action(async (options) => {
     try {
-      await main(options);
+      const normalizedOptions = {
+        ...options,
+        noCommit: options.commit === false,
+      };
+      await main(normalizedOptions);
     } catch (error) {
       console.error(chalk.red(`\nError: ${error.message}`));
       process.exit(1);

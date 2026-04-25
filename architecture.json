@@ -1,0 +1,394 @@
+{
+  "version": "0.4.14",
+  "generatedAt": "2026-04-22T14:28:04.841Z",
+  "graph": {
+    "nodes": [
+      {
+        "id": "@google/generative-ai",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "@google/generative-ai",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "@google/generative-ai",
+        "externalCalls": []
+      },
+      {
+        "id": "boxen",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "boxen",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "boxen",
+        "externalCalls": []
+      },
+      {
+        "id": "chalk",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "chalk",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "chalk",
+        "externalCalls": []
+      },
+      {
+        "id": "child_process",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "child_process",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "child_process",
+        "externalCalls": []
+      },
+      {
+        "id": "conf",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "conf",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "conf",
+        "externalCalls": []
+      },
+      {
+        "id": "cosmiconfig",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "cosmiconfig",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "cosmiconfig",
+        "externalCalls": []
+      },
+      {
+        "id": "figlet",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "figlet",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "figlet",
+        "externalCalls": []
+      },
+      {
+        "id": "inquirer",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "inquirer",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "inquirer",
+        "externalCalls": []
+      },
+      {
+        "id": "openai",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "openai",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "openai",
+        "externalCalls": []
+      },
+      {
+        "id": "ora",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "ora",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "ora",
+        "externalCalls": []
+      },
+      {
+        "id": "simple-git",
+        "metadata": {
+          "type": "external",
+          "source": "inferred",
+          "label": "simple-git",
+          "layer": "External",
+          "domain": "shared"
+        },
+        "type": "external",
+        "label": "simple-git",
+        "externalCalls": []
+      },
+      {
+        "id": "src/ai.js",
+        "metadata": {
+          "type": "module",
+          "source": "inferred",
+          "inheritance": [],
+          "decorators": [],
+          "metrics": {
+            "sloc": 67,
+            "complexity": 5
+          },
+          "label": "Ai",
+          "layer": "Core",
+          "domain": "shared"
+        },
+        "type": "module",
+        "externalCalls": []
+      },
+      {
+        "id": "src/ai/providers/gemini.js",
+        "metadata": {
+          "type": "module",
+          "source": "inferred",
+          "inheritance": [],
+          "decorators": [],
+          "metrics": {
+            "sloc": 21,
+            "complexity": 3
+          },
+          "label": "Gemini",
+          "layer": "Core",
+          "domain": "ai"
+        },
+        "type": "module",
+        "externalCalls": []
+      },
+      {
+        "id": "src/ai/providers/openai.js",
+        "metadata": {
+          "type": "module",
+          "source": "inferred",
+          "inheritance": [],
+          "decorators": [],
+          "metrics": {
+            "sloc": 21,
+            "complexity": 3
+          },
+          "label": "Openai",
+          "layer": "Core",
+          "domain": "ai"
+        },
+        "type": "module",
+        "externalCalls": []
+      },
+      {
+        "id": "src/analyzer.js",
+        "metadata": {
+          "type": "module",
+          "source": "inferred",
+          "inheritance": [],
+          "decorators": [],
+          "metrics": {
+            "sloc": 33,
+            "complexity": 3
+          },
+          "label": "Analyzer",
+          "layer": "Core",
+          "domain": "shared"
+        },
+        "type": "module",
+        "externalCalls": []
+      },
+      {
+        "id": "src/config.js",
+        "metadata": {
+          "type": "module",
+          "source": "inferred",
+          "inheritance": [],
+          "decorators": [],
+          "metrics": {
+            "sloc": 58,
+            "complexity": 10
+          },
+          "label": "Config",
+          "layer": "Core",
+          "domain": "shared"
+        },
+        "type": "module",
+        "externalCalls": []
+      },
+      {
+        "id": "src/git.js",
+        "metadata": {
+          "type": "module",
+          "source": "inferred",
+          "inheritance": [],
+          "decorators": [],
+          "metrics": {
+            "sloc": 65,
+            "complexity": 9
+          },
+          "label": "Git",
+          "layer": "Core",
+          "domain": "shared"
+        },
+        "type": "module",
+        "externalCalls": []
+      },
+      {
+        "id": "src/index.js",
+        "metadata": {
+          "type": "module",
+          "source": "inferred",
+          "inheritance": [],
+          "decorators": [],
+          "metrics": {
+            "sloc": 99,
+            "complexity": 10
+          },
+          "label": "Src/Index",
+          "layer": "Core",
+          "domain": "shared"
+        },
+        "type": "module",
+        "externalCalls": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "src/ai.js->src/ai/providers/gemini.js:import",
+        "from": "src/ai.js",
+        "to": "src/ai/providers/gemini.js",
+        "type": "import",
+        "isTypeOnly": false
+      },
+      {
+        "id": "src/ai.js->src/ai/providers/openai.js:import",
+        "from": "src/ai.js",
+        "to": "src/ai/providers/openai.js",
+        "type": "import",
+        "isTypeOnly": false
+      },
+      {
+        "id": "src/ai/providers/gemini.js->@google/generative-ai:import",
+        "from": "src/ai/providers/gemini.js",
+        "to": "@google/generative-ai",
+        "type": "import"
+      },
+      {
+        "id": "src/ai/providers/openai.js->openai:import",
+        "from": "src/ai/providers/openai.js",
+        "to": "openai",
+        "type": "import"
+      },
+      {
+        "id": "src/analyzer.js->child_process:import",
+        "from": "src/analyzer.js",
+        "to": "child_process",
+        "type": "import"
+      },
+      {
+        "id": "src/config.js->conf:import",
+        "from": "src/config.js",
+        "to": "conf",
+        "type": "import"
+      },
+      {
+        "id": "src/config.js->cosmiconfig:import",
+        "from": "src/config.js",
+        "to": "cosmiconfig",
+        "type": "import"
+      },
+      {
+        "id": "src/config.js->simple-git:import",
+        "from": "src/config.js",
+        "to": "simple-git",
+        "type": "import"
+      },
+      {
+        "id": "src/git.js->simple-git:import",
+        "from": "src/git.js",
+        "to": "simple-git",
+        "type": "import"
+      },
+      {
+        "id": "src/index.js->boxen:import",
+        "from": "src/index.js",
+        "to": "boxen",
+        "type": "import"
+      },
+      {
+        "id": "src/index.js->chalk:import",
+        "from": "src/index.js",
+        "to": "chalk",
+        "type": "import"
+      },
+      {
+        "id": "src/index.js->figlet:import",
+        "from": "src/index.js",
+        "to": "figlet",
+        "type": "import"
+      },
+      {
+        "id": "src/index.js->inquirer:import",
+        "from": "src/index.js",
+        "to": "inquirer",
+        "type": "import"
+      },
+      {
+        "id": "src/index.js->ora:import",
+        "from": "src/index.js",
+        "to": "ora",
+        "type": "import"
+      },
+      {
+        "id": "src/index.js->src/ai.js:import",
+        "from": "src/index.js",
+        "to": "src/ai.js",
+        "type": "import",
+        "isTypeOnly": false
+      },
+      {
+        "id": "src/index.js->src/analyzer.js:import",
+        "from": "src/index.js",
+        "to": "src/analyzer.js",
+        "type": "import",
+        "isTypeOnly": false
+      },
+      {
+        "id": "src/index.js->src/config.js:import",
+        "from": "src/index.js",
+        "to": "src/config.js",
+        "type": "import",
+        "isTypeOnly": false
+      },
+      {
+        "id": "src/index.js->src/git.js:import",
+        "from": "src/index.js",
+        "to": "src/git.js",
+        "type": "import",
+        "isTypeOnly": false
+      }
+    ],
+    "version": "0.4.14"
+  }
+}

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>self-commit - Architecture Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-color: #2563eb;
+            --accent-soft: #dbeafe;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        header {
+            background: var(--card-bg);
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        .title-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .project-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .context-badge {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.2rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        .group {
+            display: flex;
+            background: #f8fafc;
+            padding: 0.2rem;
+            border-radius: 8px;
+            gap: 0.2rem;
+            border: 1px solid var(--border-color);
+        }
+        button {
+            background: transparent;
+            border: none;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.15s ease;
+        }
+        button.active {
+            background: white;
+            color: var(--accent-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        button:hover:not(.active) {
+            color: var(--text-primary);
+            background: #f1f5f9;
+        }
+        .action-btn {
+            background: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .action-btn:hover {
+            background: #f8fafc;
+        }
+        #diagram-container {
+            flex: 1;
+            overflow: auto;
+            padding: 3rem;
+            background: white;
+            background-image: 
+                linear-gradient(var(--bg-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--bg-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-width: min-content;
+        }
+        .mermaid svg {
+            max-width: none !important;
+            height: auto !important;
+            cursor: crosshair;
+            transition: transform 0.1s ease-out;
+        }
+        .back-btn {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 0.3rem;
+            background: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .back-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title-area">
+            <div onclick="resetView()" style="cursor:pointer">
+                <span class="project-label">Project</span>
+                <h1>self-commit</h1>
+            </div>
+            <div id="context-badge" class="context-badge"></div>
+            <div id="back-btn" class="back-btn" onclick="resetView()">
+                <span>←</span> Exit Domain
+            </div>
+        </div>
+        <div class="controls">
+            <div class="group" id="view-group">
+                <button onclick="changeView('high-level')" id="btn-high-level" class="active">High-Level</button>
+                <button onclick="changeView('detailed')" id="btn-detailed">Detailed</button>
+            </div>
+            <div class="group" id="direction-group">
+                <button onclick="setDirection('TD')" id="btn-TD">Vertical</button>
+                <button onclick="setDirection('LR')" id="btn-LR" class="active">Horizontal</button>
+            </div>
+            <button class="action-btn" onclick="zoom(0.15)">Zoom +</button>
+            <button class="action-btn" onclick="zoom(-0.15)">Zoom -</button>
+            <button class="action-btn" onclick="resetZoom()">Reset</button>
+        </div>
+    </header>
+    <div id="diagram-container">
+        <div class="mermaid" id="mermaid-graph"></div>
+    </div>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        
+        const graph = {"nodes":[{"id":"@google/generative-ai","metadata":{"type":"external","source":"inferred","label":"@google/generative-ai","layer":"External","domain":"shared"},"type":"external","label":"@google/generative-ai","externalCalls":[]},{"id":"boxen","metadata":{"type":"external","source":"inferred","label":"boxen","layer":"External","domain":"shared"},"type":"external","label":"boxen","externalCalls":[]},{"id":"chalk","metadata":{"type":"external","source":"inferred","label":"chalk","layer":"External","domain":"shared"},"type":"external","label":"chalk","externalCalls":[]},{"id":"child_process","metadata":{"type":"external","source":"inferred","label":"child_process","layer":"External","domain":"shared"},"type":"external","label":"child_process","externalCalls":[]},{"id":"conf","metadata":{"type":"external","source":"inferred","label":"conf","layer":"External","domain":"shared"},"type":"external","label":"conf","externalCalls":[]},{"id":"cosmiconfig","metadata":{"type":"external","source":"inferred","label":"cosmiconfig","layer":"External","domain":"shared"},"type":"external","label":"cosmiconfig","externalCalls":[]},{"id":"figlet","metadata":{"type":"external","source":"inferred","label":"figlet","layer":"External","domain":"shared"},"type":"external","label":"figlet","externalCalls":[]},{"id":"inquirer","metadata":{"type":"external","source":"inferred","label":"inquirer","layer":"External","domain":"shared"},"type":"external","label":"inquirer","externalCalls":[]},{"id":"openai","metadata":{"type":"external","source":"inferred","label":"openai","layer":"External","domain":"shared"},"type":"external","label":"openai","externalCalls":[]},{"id":"ora","metadata":{"type":"external","source":"inferred","label":"ora","layer":"External","domain":"shared"},"type":"external","label":"ora","externalCalls":[]},{"id":"simple-git","metadata":{"type":"external","source":"inferred","label":"simple-git","layer":"External","domain":"shared"},"type":"external","label":"simple-git","externalCalls":[]},{"id":"src/ai.js","metadata":{"type":"module","source":"inferred","inheritance":[],"decorators":[],"metrics":{"sloc":67,"complexity":5},"label":"Ai","layer":"Core","domain":"shared"},"type":"module","externalCalls":[]},{"id":"src/ai/providers/gemini.js","metadata":{"type":"module","source":"inferred","inheritance":[],"decorators":[],"metrics":{"sloc":21,"complexity":3},"label":"Gemini","layer":"Core","domain":"ai"},"type":"module","externalCalls":[]},{"id":"src/ai/providers/openai.js","metadata":{"type":"module","source":"inferred","inheritance":[],"decorators":[],"metrics":{"sloc":21,"complexity":3},"label":"Openai","layer":"Core","domain":"ai"},"type":"module","externalCalls":[]},{"id":"src/analyzer.js","metadata":{"type":"module","source":"inferred","inheritance":[],"decorators":[],"metrics":{"sloc":33,"complexity":3},"label":"Analyzer","layer":"Core","domain":"shared"},"type":"module","externalCalls":[]},{"id":"src/config.js","metadata":{"type":"module","source":"inferred","inheritance":[],"decorators":[],"metrics":{"sloc":58,"complexity":10},"label":"Config","layer":"Core","domain":"shared"},"type":"module","externalCalls":[]},{"id":"src/git.js","metadata":{"type":"module","source":"inferred","inheritance":[],"decorators":[],"metrics":{"sloc":65,"complexity":9},"label":"Git","layer":"Core","domain":"shared"},"type":"module","externalCalls":[]},{"id":"src/index.js","metadata":{"type":"module","source":"inferred","inheritance":[],"decorators":[],"metrics":{"sloc":99,"complexity":10},"label":"Src/Index","layer":"Core","domain":"shared"},"type":"module","externalCalls":[]}],"edges":[{"id":"src/ai.js->src/ai/providers/gemini.js:import","from":"src/ai.js","to":"src/ai/providers/gemini.js","type":"import","isTypeOnly":false},{"id":"src/ai.js->src/ai/providers/openai.js:import","from":"src/ai.js","to":"src/ai/providers/openai.js","type":"import","isTypeOnly":false},{"id":"src/ai/providers/gemini.js->@google/generative-ai:import","from":"src/ai/providers/gemini.js","to":"@google/generative-ai","type":"import"},{"id":"src/ai/providers/openai.js->openai:import","from":"src/ai/providers/openai.js","to":"openai","type":"import"},{"id":"src/analyzer.js->child_process:import","from":"src/analyzer.js","to":"child_process","type":"import"},{"id":"src/config.js->conf:import","from":"src/config.js","to":"conf","type":"import"},{"id":"src/config.js->cosmiconfig:import","from":"src/config.js","to":"cosmiconfig","type":"import"},{"id":"src/config.js->simple-git:import","from":"src/config.js","to":"simple-git","type":"import"},{"id":"src/git.js->simple-git:import","from":"src/git.js","to":"simple-git","type":"import"},{"id":"src/index.js->boxen:import","from":"src/index.js","to":"boxen","type":"import"},{"id":"src/index.js->chalk:import","from":"src/index.js","to":"chalk","type":"import"},{"id":"src/index.js->figlet:import","from":"src/index.js","to":"figlet","type":"import"},{"id":"src/index.js->inquirer:import","from":"src/index.js","to":"inquirer","type":"import"},{"id":"src/index.js->ora:import","from":"src/index.js","to":"ora","type":"import"},{"id":"src/index.js->src/ai.js:import","from":"src/index.js","to":"src/ai.js","type":"import","isTypeOnly":false},{"id":"src/index.js->src/analyzer.js:import","from":"src/index.js","to":"src/analyzer.js","type":"import","isTypeOnly":false},{"id":"src/index.js->src/config.js:import","from":"src/index.js","to":"src/config.js","type":"import","isTypeOnly":false},{"id":"src/index.js->src/git.js:import","from":"src/index.js","to":"src/git.js","type":"import","isTypeOnly":false}],"version":"0.4.14"};
+        let currentView = 'high-level'; 
+        let currentDirection = 'LR';
+        let currentLayer = null;
+        let currentDomain = null;
+        let scale = 1;
+
+        mermaid.initialize({ 
+            startOnLoad: false,
+            theme: 'base',
+            securityLevel: 'loose',
+            flowchart: { 
+                useMaxWidth: false, 
+                htmlLabels: true, 
+                curve: 'basis',
+                rankspacing: 80,
+                nodespacing: 50
+            },
+            themeVariables: {
+                primaryColor: '#ffffff',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#cbd5e1',
+                lineColor: '#94a3b8',
+                secondaryColor: '#f8fafc',
+                tertiaryColor: '#f1f5f9'
+            }
+        });
+
+        window.onNodeClick = (id) => {
+            if (currentView === 'high-level' && id.startsWith('n_dom_')) {
+                // ID is n_dom_LAYER_DOMAIN
+                const parts = id.split('_');
+                const layer = parts[2];
+                const domain = parts.slice(3).join('_');
+                drillDown(layer, domain);
+            }
+        };
+
+        function drillDown(layer, domain) {
+            currentLayer = layer;
+            currentDomain = domain;
+            currentView = 'drill-down';
+            updateUI();
+            render();
+        }
+
+        window.resetView = () => {
+            currentView = 'high-level';
+            currentLayer = null;
+            currentDomain = null;
+            updateUI();
+            render();
+        };
+
+        window.changeView = (view) => {
+            currentView = view;
+            currentLayer = null;
+            currentDomain = null;
+            updateUI();
+            render();
+        };
+
+        function updateUI() {
+            const badge = document.getElementById('context-badge');
+            const backBtn = document.getElementById('back-btn');
+            const viewGroup = document.getElementById('view-group');
+            
+            if (currentView === 'drill-down') {
+                badge.style.display = 'block';
+                badge.innerText = currentLayer.toUpperCase() + ' > ' + currentDomain.toUpperCase();
+                backBtn.style.display = 'flex';
+                viewGroup.style.opacity = '0.4';
+                viewGroup.style.pointerEvents = 'none';
+            } else {
+                badge.style.display = 'none';
+                backBtn.style.display = 'none';
+                viewGroup.style.opacity = '1';
+                viewGroup.style.pointerEvents = 'all';
+            }
+
+            document.querySelectorAll('#view-group button').forEach(b => {
+                b.classList.remove('active');
+                if (b.id === 'btn-' + currentView) b.classList.add('active');
+            });
+        }
+
+        window.setDirection = (dir) => {
+            currentDirection = dir;
+            document.querySelectorAll('#direction-group button').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + dir).classList.add('active');
+            render();
+        };
+
+        async function render() {
+            const syntax = generateMermaidSyntax();
+            const container = document.getElementById('mermaid-graph');
+            container.removeAttribute('data-processed');
+            container.innerHTML = syntax;
+            try {
+                await mermaid.run({ nodes: [container] });
+            } catch (err) {
+                console.error('Rendering failed', err);
+            }
+            applyZoom();
+        }
+
+        function generateMermaidSyntax() {
+            let syntax = 'flowchart ' + currentDirection + '\n';
+            
+            if (currentView === 'high-level') {
+                const domainMap = new Map();
+                graph.nodes.forEach(n => {
+                    const layer = n.metadata.layer || 'Core';
+                    const domain = n.metadata.domain || 'shared';
+                    const key = layer + '::' + domain;
+                    if (!domainMap.has(key)) domainMap.set(key, { layer, domain, count: 0 });
+                    domainMap.get(key).count++;
+                });
+
+                const layers = [...new Set(graph.nodes.map(n => n.metadata.layer || 'Core'))];
+                layers.forEach(layer => {
+                    syntax += '  subgraph ' + safeId(layer) + ' ["' + cleanLabel(layer) + '"]\n';
+                    [...domainMap.values()].filter(d => d.layer === layer).forEach(d => {
+                        const id = getDomainId(d.layer, d.domain);
+                        syntax += '    ' + id + '["' + cleanLabel(d.domain) + ' <small>(' + d.count + ' files)</small>"]\n';
+                        syntax += '    click ' + id + ' call onNodeClick("' + id + '")\n';
+                    });
+                    syntax += '  end\n';
+                });
+
+                const domainEdges = new Set();
+                graph.edges.forEach(e => {
+                    const fromNode = graph.nodes.find(n => n.id === e.from);
+                    const toNode = graph.nodes.find(n => n.id === e.to);
+                    if (fromNode && toNode) {
+                        const from = getDomainId(fromNode.metadata.layer || 'Core', fromNode.metadata.domain || 'shared');
+                        const to = getDomainId(toNode.metadata.layer || 'Core', toNode.metadata.domain || 'shared');
+                        if (from !== to) domainEdges.add(from + ' --> ' + to);
+                    }
+                });
+                domainEdges.forEach(e => syntax += '  ' + e + '\n');
+
+            } else {
+                const nodes = currentView === 'drill-down' 
+                    ? graph.nodes.filter(n => 
+                        (n.metadata.layer || 'Core') === currentLayer && 
+                        (n.metadata.domain || 'shared') === currentDomain
+                      )
+                    : graph.nodes;
+                
+                const nodeIds = new Set(nodes.map(n => n.id));
+
+                if (currentView === 'drill-down') {
+                    syntax += '  subgraph ' + safeId(currentLayer + '_' + currentDomain) + ' ["' + cleanLabel(currentLayer).toUpperCase() + ' > ' + cleanLabel(currentDomain).toUpperCase() + '"]\n';
+                }
+                
+                nodes.forEach(n => {
+                    const label = n.id.split('/').pop();
+                    syntax += '    ' + safeId(n.id) + '["' + cleanLabel(label) + '"]\n';
+                });
+
+                if (currentView === 'drill-down') {
+                    syntax += '  end\n';
+                }
+
+                graph.edges.forEach(e => {
+                    if (nodeIds.has(e.from) && nodeIds.has(e.to)) {
+                        syntax += '  ' + safeId(e.from) + ' --> ' + safeId(e.to) + '\n';
+                    }
+                });
+            }
+            
+            return syntax;
+        }
+
+        function getDomainId(layer, domain) {
+            return safeId('dom_' + layer + '_' + domain);
+        }
+
+        function safeId(id) {
+            return 'n_' + id.replace(/[^a-zA-Z0-9]/g, '_');
+        }
+
+        function cleanLabel(label) {
+            if (!label) return 'unnamed';
+            return label.replace(/[^a-zA-Z0-9 \.\-_]/g, '').trim();
+        }
+
+        window.zoom = (delta) => { scale = Math.max(0.1, scale + delta); applyZoom(); };
+        window.resetZoom = () => { scale = 1; applyZoom(); };
+        function applyZoom() {
+            const svg = document.querySelector('.mermaid svg');
+            if (svg) {
+                svg.style.transform = 'scale(' + scale + ')';
+                svg.style.transformOrigin = 'top center';
+            }
+        }
+
+        render();
+    </script>
+</body>
+</html>
